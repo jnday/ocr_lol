@@ -179,3 +179,41 @@ Creating an OCR pipeline as described involves several sophisticated steps, inte
 - LLM Integration: OpenAI API, Transformers library.
 
 This pipeline provides a comprehensive approach to document analysis, leveraging both traditional and advanced machine learning techniques to extract, organize, and utilize document data effectively.
+
+
+# Notes
+
+inputs: List of files, config settings
+outputs: One XML document per input file
+Job Handler
+   Source File Management
+   Document Management
+   Config Management
+
+inputs: list of file paths
+outputs: one image per PDF page, one image per jpg or similar
+Source File Handler
+   Check for images with more than one document page on them.
+   Convert PDF to page images.
+   Save in appropriate directory or,
+   pass df to another handler
+
+
+
+Document Handler / Builder
+   Dict holding info for a source file, for export to XML
+   XML export depending on doc type
+   Page Management
+
+Page Handler
+
+Section Handler
+   Section labels eg 'Text' or 'Picture' need to come from / be set somewhere
+
+TextSection Handler
+   check self.config.handler.text for model to use
+      -- or a config class method that spits this out 
+
+PictureSection Handler
+
+TableSection Handler

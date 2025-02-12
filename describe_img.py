@@ -1,5 +1,4 @@
 import torch
-from PIL import Image
 from transformers import BlipProcessor, BlipForQuestionAnswering
 from transformers import AutoModelForCausalLM, AutoProcessor
 
@@ -12,27 +11,24 @@ def process_blip(image):
     inputs = processor(image, question, return_tensors="pt").to("cuda", torch.float16)
 
     out = model.generate(**inputs)
-    print(processor.decode(out[0], skip_special_tokens=True))
+    return processor.decode(out[0], skip_special_tokens=True)
 
 
 def process_llama(image):
     model_name = "DAMO-NLP-SG/VideoLLaMA3-2B-Image"
     processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
-    # model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.bfloat16)
-
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         trust_remote_code=True,
         device_map="cuda",
         torch_dtype=torch.bfloat16,
-        attn_implementation="eager",
+        attn_implementation="eager", 
         # VISION_ATTENTION_CLASSES = {
         #     "eager": VisionAttention,
-        #     "flash_attention_2": VisionFlashAttention2,
+        #     "flash_attention_2": VisionFlashAttention2,  # does not work on my laptop!
         #     "sdpa": VisionSdpaAttention,
         # }
     )
-    # processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
 
     # Image conversation
     question = "What is this a picture of?"
@@ -51,5 +47,6 @@ def process_llama(image):
     if "pixel_values" in inputs:
         inputs["pixel_values"] = inputs["pixel_values"].to(torch.bfloat16)
     output_ids = model.generate(**inputs, max_new_tokens=128)
-    response = processor.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
-    print(response)
+    
+    return processor.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
+

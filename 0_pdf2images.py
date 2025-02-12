@@ -7,7 +7,7 @@ from wand.image import Image
 # output: one jpg image per page, transformed for ingestion if needed
 
 input_dir = 'input/'
-input_filename = 'Weick2005.pdf'
+input_filename = 'tables_charts.pdf'
 input_path = input_dir + input_filename
 output_dir = 'step_0/'
 os.makedirs(output_dir, exist_ok=True)
